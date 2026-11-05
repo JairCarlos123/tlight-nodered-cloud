@@ -195,7 +195,7 @@
     "type": "function",
     "z": "f6f2187d.f17ca8",
     "name": "Validar y distribuir",
-    "outputs": 4,
+    "outputs": 5,
     "x": 430,
     "y": 120,
     "wires": [
@@ -210,9 +210,12 @@
       ],
       [
         "cloud-response"
+      ],
+      [
+        "auto-ml-template"
       ]
     ],
-    "func": "const p = msg.payload;\nconst valid = p && ['luces','contadores','controles'].includes(p.kind) && Array.isArray(p.values);\nconst expected = {luces:5, contadores:5, controles:3};\nif (!valid || p.values.length !== expected[p.kind] ||\n    (p.kind === 'contadores' ? !p.values.every(v => Number.isInteger(v) && v >= -32768 && v <= 32767) : !p.values.every(v => typeof v === 'boolean'))) {\n    msg.statusCode = 400; msg.payload = {error:'Datos invalidos'};\n    return [null,null,null,msg];\n}\nconst values = p.values;\nconst update = {payload: p.kind === 'luces' ? {\n    p_red:values[0], p_green:values[1], v_red:values[2], v_yel:values[3], v_green:values[4]\n} : values};\nmsg.statusCode = 200;\nmsg.payload = {ok:true, receivedAt:new Date().toISOString()};\nreturn [p.kind === 'luces' ? update : null, p.kind === 'contadores' ? update : null, p.kind === 'controles' ? update : null, msg];"
+    "func": "const incoming = msg.payload;\nif (incoming && incoming.kind === 'ml') {\n    const s = incoming.summary;\n    const base = s && ['ok','error'].includes(s.status) && typeof s.report === 'string' && s.report.length <= 255 && typeof s.processedAt === 'string' && Number.isFinite(Date.parse(s.processedAt)) && s.retrained === false && typeof s.message === 'string' && s.message.length <= 1200;\n    const valid = base && (s.status === 'error' || (\n        Number.isInteger(s.samples) && s.samples > 0 && Number.isInteger(s.normal) && s.normal >= 0 && Number.isInteger(s.alerts) && s.alerts >= 0 &&\n        s.normal+s.alerts === s.samples && Number.isFinite(s.alert_fraction) && Math.abs(s.alert_fraction-s.alerts/s.samples) < 1e-9 && typeof s.period === 'string'));\n    if (!valid) {\n        msg.statusCode=400; msg.payload={error:'Resumen ML invalido'};\n        return [null,null,null,msg,null];\n    }\n    const clean = {status:s.status, report:s.report, processedAt:s.processedAt, message:s.message, retrained:false, mode:'Análisis automático de CSV; no detección continua'};\n    if(s.status === 'ok') Object.assign(clean,{samples:s.samples,normal:s.normal,alerts:s.alerts,alert_fraction:s.alert_fraction,period:s.period});\n    msg.statusCode=200;msg.payload={ok:true,kind:'ml',receivedAt:new Date().toISOString()};\n    return [null,null,null,msg,{payload:clean}];\n}\nconst p = msg.payload;\nconst valid = p && ['luces','contadores','controles'].includes(p.kind) && Array.isArray(p.values);\nconst expected = {luces:5, contadores:5, controles:3};\nif (!valid || p.values.length !== expected[p.kind] ||\n    (p.kind === 'contadores' ? !p.values.every(v => Number.isInteger(v) && v >= -32768 && v <= 32767) : !p.values.every(v => typeof v === 'boolean'))) {\n    msg.statusCode = 400; msg.payload = {error:'Datos invalidos'};\n    return [null,null,null,msg];\n}\nconst values = p.values;\nconst update = {payload: p.kind === 'luces' ? {\n    p_red:values[0], p_green:values[1], v_red:values[2], v_yel:values[3], v_green:values[4]\n} : values};\nmsg.statusCode = 200;\nmsg.payload = {ok:true, receivedAt:new Date().toISOString()};\nreturn [p.kind === 'luces' ? update : null, p.kind === 'contadores' ? update : null, p.kind === 'controles' ? update : null, msg];"
   },
   {
     "id": "cloud-response",
@@ -226,5 +229,42 @@
     "x": 720,
     "y": 220,
     "wires": []
+  },
+  {
+    "id": "auto-ml-group",
+    "type": "ui-group",
+    "name": "Análisis automático de CSV",
+    "page": "be15b828bc2ec6ba",
+    "width": "6",
+    "height": "1",
+    "order": 3,
+    "showTitle": true,
+    "className": "",
+    "visible": "true",
+    "disabled": "false",
+    "groupType": "default"
+  },
+  {
+    "id": "auto-ml-template",
+    "type": "ui-template",
+    "z": "f6f2187d.f17ca8",
+    "group": "auto-ml-group",
+    "page": "",
+    "ui": "",
+    "name": "Último análisis automático",
+    "order": 1,
+    "width": 0,
+    "height": 0,
+    "format": "<template>\n<section style=\"padding:20px\">\n<h2>Análisis automático de CSV</h2>\n<p v-if=\"!msg.payload\">Esperando el primer CSV analizado en tu computadora.</p>\n<template v-else>\n<p><b>{{ msg.payload.report }}</b><br>{{ msg.payload.mode }}</p>\n<p>Analizado: {{ new Date(msg.payload.processedAt).toLocaleString() }}</p>\n<template v-if=\"msg.payload.status === 'ok'\">\n<p>Periodo: {{ msg.payload.period }}</p>\n<p>Muestras: <b>{{ msg.payload.samples }}</b> · Normales: <b>{{ msg.payload.normal }}</b></p>\n<p>Alertas por revisar: <b>{{ msg.payload.alerts }}</b> ({{ (msg.payload.alert_fraction*100).toFixed(2) }} %)</p>\n<p>Modelo guardado, sin reentrenamiento.</p>\n</template>\n<p v-else style=\"color:#b91c1c\"><b>No se pudo evaluar este CSV.</b></p>\n<p>{{ msg.payload.message }}</p>\n<small>Resultado del último archivo recibido; no indica que el PLC siga conectado. Las alertas no son ataques confirmados. El modelo tiene bajo recall en las pruebas publicadas.</small>\n</template>\n</section>\n</template>",
+    "storeOutMessages": true,
+    "passthru": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 1030,
+    "y": 440,
+    "wires": [
+      []
+    ]
   }
 ]
