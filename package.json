@@ -1,0 +1,8 @@
+{
+  "name": "tlight-nodered-cloud",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {"start": "node-red --userDir . --settings settings.js flows.json"},
+  "engines": {"node": "22.x"},
+  "dependencies": {"node-red": "^4.1.0", "@flowfuse/node-red-dashboard": "^1.29.0", "bcryptjs": "^3.0.2"}
+}

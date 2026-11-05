@@ -1,0 +1,230 @@
+[
+  {
+    "id": "f6f2187d.f17ca8",
+    "type": "tab",
+    "label": "TLIGHT nube",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "af22216b759ae4db",
+    "type": "ui-base",
+    "name": "My Dashboard",
+    "path": "/dashboard",
+    "appIcon": "",
+    "includeClientData": true,
+    "acceptsClientConfig": [
+      "ui-notification",
+      "ui-control"
+    ],
+    "showPathInSidebar": false,
+    "headerContent": "page",
+    "navigationStyle": "default",
+    "titleBarStyle": "default",
+    "showReconnectNotification": true,
+    "notificationDisplayTime": 1,
+    "showDisconnectNotification": true,
+    "allowInstall": false
+  },
+  {
+    "id": "dcc4d23963362503",
+    "type": "ui-theme",
+    "name": "Default Theme",
+    "colors": {
+      "surface": "#fcfcfd",
+      "primary": "#0d74ce",
+      "bgPage": "#f9f9fb",
+      "groupBg": "#ffffff",
+      "groupOutline": "#d9d9e0"
+    },
+    "sizes": {
+      "density": "default",
+      "pagePadding": "12px",
+      "groupGap": "12px",
+      "groupBorderRadius": "4px",
+      "widgetGap": "12px"
+    }
+  },
+  {
+    "id": "be15b828bc2ec6ba",
+    "type": "ui-page",
+    "name": "Page 1",
+    "ui": "af22216b759ae4db",
+    "path": "/page1",
+    "icon": "home",
+    "layout": "grid",
+    "theme": "dcc4d23963362503",
+    "breakpoints": [
+      {
+        "name": "Default",
+        "px": 0,
+        "cols": 3
+      },
+      {
+        "name": "Tablet",
+        "px": 576,
+        "cols": 6
+      },
+      {
+        "name": "Small Desktop",
+        "px": 768,
+        "cols": 9
+      },
+      {
+        "name": "Desktop",
+        "px": 1024,
+        "cols": 12
+      }
+    ],
+    "tabs": [],
+    "order": 1,
+    "className": "",
+    "visible": "true",
+    "disabled": "false"
+  },
+  {
+    "id": "86f0e36d893bd84d",
+    "type": "ui-group",
+    "name": "Group 1",
+    "page": "be15b828bc2ec6ba",
+    "width": 6,
+    "height": 1,
+    "order": 1,
+    "showTitle": true,
+    "className": "",
+    "visible": true,
+    "disabled": false,
+    "groupType": "default",
+    "keepLoaded": false,
+    "tab": ""
+  },
+  {
+    "id": "72fff7ad685cf81a",
+    "type": "ui-template",
+    "z": "f6f2187d.f17ca8",
+    "group": "86f0e36d893bd84d",
+    "page": "",
+    "ui": "",
+    "name": "Panel del semáforo",
+    "order": 2,
+    "width": 0,
+    "height": 0,
+    "head": "",
+    "format": "<template>\n  <div class=\"tlight-panel\">\n    <h2>Semáforo · OpenPLC</h2>\n    <p>{{ msg.payload ? 'Datos del PLC' : 'Esperando datos…' }}</p>\n\n    <div class=\"tlight-columns\">\n      <div>\n        <h3>Vehicular</h3>\n        <div class=\"tlight-box\">\n          <div class=\"tlight-lamp\"\n            :class=\"{ 'tlight-red': msg.payload?.v_red }\">\n            ROJO\n          </div>\n          <div class=\"tlight-lamp\"\n            :class=\"{ 'tlight-yellow': msg.payload?.v_yel }\">\n            AMARILLO\n          </div>\n          <div class=\"tlight-lamp\"\n            :class=\"{ 'tlight-green': msg.payload?.v_green }\">\n            VERDE\n          </div>\n        </div>\n      </div>\n\n      <div>\n        <h3>Peatonal</h3>\n        <div class=\"tlight-box\">\n          <div class=\"tlight-lamp\"\n            :class=\"{ 'tlight-red': msg.payload?.p_red }\">\n            ROJO\n          </div>\n          <div class=\"tlight-lamp\"\n            :class=\"{ 'tlight-green': msg.payload?.p_green }\">\n            VERDE\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n</template>\n\n<style>\n.tlight-panel {\n  padding: 16px;\n  text-align: center;\n}\n.tlight-columns {\n  display: flex;\n  justify-content: center;\n  align-items: flex-start;\n  gap: 28px;\n}\n.tlight-columns h3 {\n  margin: 12px 0;\n}\n.tlight-box {\n  background: #1f2937;\n  padding: 14px;\n  border-radius: 22px;\n}\n.tlight-lamp {\n  width: 82px;\n  height: 82px;\n  margin: 10px 0;\n  border-radius: 50%;\n  background: #374151;\n  color: white;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 11px;\n  font-weight: bold;\n}\n.tlight-red {\n  background: #ef4444;\n  box-shadow: 0 0 20px #ef444480;\n}\n.tlight-yellow {\n  background: #facc15;\n  color: #1f2937;\n  box-shadow: 0 0 20px #facc1580;\n}\n.tlight-green {\n  background: #22c55e;\n  box-shadow: 0 0 20px #22c55e80;\n}\n</style>|",
+    "noerr": 0,
+    "storeOutMessages": true,
+    "passthru": true,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 730,
+    "y": 520,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "489afe71152d2a15",
+    "type": "ui-template",
+    "z": "f6f2187d.f17ca8",
+    "group": "86f0e36d893bd84d",
+    "page": "",
+    "ui": "",
+    "name": "Panel de contadores",
+    "order": 1,
+    "width": 0,
+    "height": 0,
+    "head": "",
+    "format": "<template>\n  <div class=\"tlight-counters\">\n    <div v-for=\"(valor, i) in (msg.payload || []).slice(0, 5)\"\n         :key=\"i\" class=\"tlight-counter\">\n      <span>C{{ i + 1 }}</span>\n      <strong>{{ valor }}</strong>\n    </div>\n  </div>\n</template>\n\n<style>\n.tlight-counters {\n  display: flex;\n  justify-content: center;\n  flex-wrap: wrap;\n  gap: 12px;\n  padding: 16px;\n}\n.tlight-counter {\n  min-width: 65px;\n  padding: 14px;\n  border: 1px solid #9ca3af;\n  border-radius: 12px;\n  text-align: center;\n}\n.tlight-counter span {\n  display: block;\n  font-size: 14px;\n}\n.tlight-counter strong {\n  display: block;\n  font-size: 24px;\n}\n</style>",
+    "noerr": 0,
+    "storeOutMessages": true,
+    "passthru": true,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 540,
+    "y": 640,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "f353f870466e627b",
+    "type": "ui-template",
+    "z": "f6f2187d.f17ca8",
+    "group": "86f0e36d893bd84d",
+    "page": "",
+    "ui": "",
+    "name": "start",
+    "order": 0,
+    "width": 0,
+    "height": 0,
+    "head": "",
+    "format": "<template>\n  <div style=\"text-align:center; padding:16px\">\n    <template v-if=\"msg.payload?.length >= 3\">\n      <b>Start:</b> {{ Number(msg.payload[2]) }}\n      · <b>Izquierda:</b> {{ Number(msg.payload[1]) }}\n      · <b>Derecha:</b> {{ Number(msg.payload[0]) }}\n    </template>\n    <span v-else>Esperando controles…</span>\n  </div>\n</template>",
+    "noerr": 0,
+    "storeOutMessages": true,
+    "passthru": true,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 510,
+    "y": 740,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "cloud-input",
+    "type": "http in",
+    "z": "f6f2187d.f17ca8",
+    "name": "Recibir datos del PLC",
+    "url": "/api/tlight",
+    "method": "post",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 160,
+    "y": 120,
+    "wires": [
+      [
+        "cloud-validate"
+      ]
+    ]
+  },
+  {
+    "id": "cloud-validate",
+    "type": "function",
+    "z": "f6f2187d.f17ca8",
+    "name": "Validar y distribuir",
+    "outputs": 4,
+    "x": 430,
+    "y": 120,
+    "wires": [
+      [
+        "72fff7ad685cf81a"
+      ],
+      [
+        "489afe71152d2a15"
+      ],
+      [
+        "f353f870466e627b"
+      ],
+      [
+        "cloud-response"
+      ]
+    ],
+    "func": "const p = msg.payload;\nconst valid = p && ['luces','contadores','controles'].includes(p.kind) && Array.isArray(p.values);\nconst expected = {luces:5, contadores:5, controles:3};\nif (!valid || p.values.length !== expected[p.kind] ||\n    (p.kind === 'contadores' ? !p.values.every(v => Number.isInteger(v) && v >= -32768 && v <= 32767) : !p.values.every(v => typeof v === 'boolean'))) {\n    msg.statusCode = 400; msg.payload = {error:'Datos invalidos'};\n    return [null,null,null,msg];\n}\nconst values = p.values;\nconst update = {payload: p.kind === 'luces' ? {\n    p_red:values[0], p_green:values[1], v_red:values[2], v_yel:values[3], v_green:values[4]\n} : values};\nmsg.statusCode = 200;\nmsg.payload = {ok:true, receivedAt:new Date().toISOString()};\nreturn [p.kind === 'luces' ? update : null, p.kind === 'contadores' ? update : null, p.kind === 'controles' ? update : null, msg];"
+  },
+  {
+    "id": "cloud-response",
+    "type": "http response",
+    "z": "f6f2187d.f17ca8",
+    "name": "Confirmar recepcion",
+    "statusCode": "",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "x": 720,
+    "y": 220,
+    "wires": []
+  }
+]
